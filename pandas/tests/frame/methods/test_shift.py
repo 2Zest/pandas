@@ -729,6 +729,27 @@ class TestDataFrameShift:
         )
         tm.assert_frame_equal(expected, shifted)
 
+    def test_shift_with_iterable_empty_dataframe(self):
+        # GH#71507
+        df = pd.DataFrame(
+            {
+                "price": pd.Series(dtype="int64"),
+                "volume": pd.Series(dtype="float64"),
+            }
+        )
+
+        result = df.shift(periods=[0, 1], suffix="_lag")
+
+        expected = pd.DataFrame(
+            {
+                "price_lag_0": pd.Series(dtype="int64"),
+                "volume_lag_0": pd.Series(dtype="float64"),
+                "price_lag_1": pd.Series(dtype="int64"),
+                "volume_lag_1": pd.Series(dtype="float64"),
+            }
+        )
+        tm.assert_frame_equal(result, expected)
+
     def test_shift_with_iterable_series(self):
         # GH#44424
         data = {"a": [1, 2, 3]}

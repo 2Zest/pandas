@@ -7630,9 +7630,6 @@ class DataFrame(NDFrame, OpsMixin):
                 "Passing a 'freq' together with a 'fill_value' is not allowed."
             )
 
-        if self.empty and freq is None:
-            return self.copy()
-
         axis = self._get_axis_number(axis)
 
         if is_list_like(periods):
@@ -7659,6 +7656,10 @@ class DataFrame(NDFrame, OpsMixin):
             return concat(shifted_dataframes, axis=1, sort=False)
         elif suffix:
             raise ValueError("Cannot specify `suffix` if `periods` is an int.")
+
+        if self.empty and freq is None:
+            return self.copy()
+
         periods = cast("int", periods)
 
         ncols = len(self.columns)
